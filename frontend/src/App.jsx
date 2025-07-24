@@ -67,6 +67,7 @@ function App() {
 				<Route element={<ProtectedRoute><AdminLayout /></ProtectedRoute>}>
 					<Route path='/' element={<DashboardPage />} />
 					
+					
 				</Route>
 				{/* catch all routes */}
 				<Route path='*' element={<Navigate to='/' replace />} />
