@@ -1,14 +1,24 @@
-import { MailtrapClient } from "mailtrap";
+import nodemailer from "nodemailer";
 import dotenv from "dotenv";
+import path from "path";
+import { fileURLToPath } from "url";
 
-dotenv.config();
+// __dirname workaround
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
-export const mailtrapClient = new MailtrapClient({
-	endpoint: process.env.MAILTRAP_ENDPOINT,
-	token: process.env.MAILTRAP_TOKEN,
+// Load env
+dotenv.config({ path: path.join(__dirname, "..", "..", ".env") });
+
+// Create transporter
+export const transporter = nodemailer.createTransport({
+  host: process.env.MAIL_HOST,
+  port: Number(process.env.MAIL_PORT),
+  auth: {
+    user: process.env.MAIL_USER,
+    pass: process.env.MAIL_PASS,
+  },
 });
 
-export const sender = {
-	email: "mailtrap@demomailtrap.com",
-	name: "Burak",
-};
+// Default sender
+export const sender = `"Famous Burger 👨‍🍳" <noreply@famousburger.com>`;
