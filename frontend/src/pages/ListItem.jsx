@@ -1,0 +1,136 @@
+import { useEffect, useState, useRef } from "react";
+import axios from "axios";
+import { API_BASE_URL } from "../config/config";
+import { FaEdit } from "react-icons/fa";
+import { MdDelete } from "react-icons/md";
+import LoadingSpinner from "../components/LoadingSpinner";
+import { useNavigate } from "react-router-dom";
+
+const ListItem = () => {
+  const [items, setItems] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const abortControllerRef = useRef(null);
+
+  const navigate = useNavigate();
+
+  const fetchItems = async (signal) => {
+    try {
+      const res = await axios.get(`${API_BASE_URL}/api/items`, { signal });
+      setItems(res.data?.payload?.items || []);
+    } catch (err) {
+      if (axios.isCancel(err)) {
+        console.log("Request canceled");
+      } else {
+        console.error("Failed to fetch items:", err);
+        setError("Failed to load items.");
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    abortControllerRef.current = new AbortController();
+    fetchItems(abortControllerRef.current.signal);
+
+    return () => {
+      abortControllerRef.current?.abort();
+    };
+  }, []);
+
+  const handleRetry = () => {
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+    }
+    const newController = new AbortController();
+    abortControllerRef.current = newController;
+
+    setError(null);
+    setLoading(true);
+    fetchItems(newController.signal);
+  };
+
+  const handleDelete = async (id) => {
+    const confirmed = window.confirm("Are you sure you want to delete this item?");
+    if (!confirmed) return;
+
+    try {
+      setLoading(true);
+      await axios.delete(`${API_BASE_URL}/api/items/${id}`);
+      // Remove deleted item from state
+      setItems((prevItems) => prevItems.filter(item => item._id !== id));
+      alert("Item deleted successfully!");
+    } catch (err) {
+      console.error("Failed to delete item:", err);
+      alert("Failed to delete item. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="relative overflow-x-auto shadow-md sm:rounded-lg p-4 min-h-screen bg-white">
+      <h1 className="text-2xl font-bold mb-4 text-center text-gray-800">All Items</h1>
+
+      {loading ? (
+        <LoadingSpinner />
+      ) : error ? (
+        <div className="text-red-500 text-center text-lg">
+          {error}
+          <button onClick={handleRetry} className="ml-4 text-blue-600 underline hover:text-blue-800">
+            Retry
+          </button>
+        </div>
+      ) : items.length === 0 ? (
+        <div className="text-center text-gray-500">No items available.</div>
+      ) : (
+        <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+          <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+            <tr>
+              <th className="px-6 py-3">Image</th>
+              <th className="px-6 py-3">Title</th>
+              <th className="px-6 py-3">Price</th>
+              <th className="px-6 py-3">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {items.map((item) => (
+              <tr key={item._id} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+                <td className="p-4">
+                  <img src={`${API_BASE_URL}/${item.image}`} alt={item.title} className="w-20 h-20 object-contain block"/>
+                </td>
+                <td className="px-6 py-4 font-semibold text-gray-900 dark:text-white">
+                  {item.title}
+                </td>
+                <td className="px-6 py-4 font-semibold text-gray-900 dark:text-white">
+                  Tk. {item.price}
+                </td>
+                <td className="px-6 py-4">
+                  <div className="flex space-x-4">
+                    <button
+                      onClick={() => navigate(`/admin-panel/update-item/${item._id}`)}
+                      className="text-blue-600 hover:text-blue-800"
+                      title="Edit"
+                    >
+                      <FaEdit size={20} />
+                    </button>
+                    <button
+                      onClick={() => handleDelete(item._id)}
+                      className="text-red-600 hover:text-red-800"
+                      title="Delete"
+                    >
+                      <MdDelete size={20} />
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
+    </div>
+  );
+};
+
+export default ListItem;

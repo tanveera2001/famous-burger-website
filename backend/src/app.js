@@ -11,7 +11,9 @@ const globalErrorHandler = require("./middlewares/globalErrorHandler");
 const multerErrorHandler = require("./middlewares/multerErrorHandler");
 
 // ✅ Converted import to require:
-const authRoutes = require("./routes/auth.route");
+const authRoutes = require("./routes/authRouter");
+const itemRouter = require("./routes/itemRouter");
+const authRouter = require("./routes/authRouter");
 
 const app = express();
 
@@ -28,7 +30,9 @@ app.use(cookieParser()); // allows us to parse incoming cookies
 app.use(express.static(path.join(__dirname, '..', 'public')));
 
 // Routes
-app.use("/api/auth", authRoutes);
+app.use("/api/auth", authRouter);
+app.use("/api/items", itemRouter);
+
 
 // Serve frontend in production
 if (nodeEnv === "production") {

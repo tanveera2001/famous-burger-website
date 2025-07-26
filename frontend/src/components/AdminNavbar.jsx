@@ -3,9 +3,9 @@ import { useAuthStore } from "../store/authStore";
 // import { motion } from "framer-motion";
 
 const navItems = [
-   { to: "/adminPanel", label: "Home" },
-   { to: "create", label: "Add items" },
-   { to: "list", label: "List items" },
+   { to: "/admin-panel", label: "Home" },
+   { to: "/admin-panel/create-item", label: "Add items" },
+   { to: "/admin-panel/list-item", label: "List items" },
 ];
 
 const navLinkClasses = ({ isActive }) => `block py-2 pr-4 pl-3 duration-200 ${isActive ? "text-orange-700" : "text-gray-700"} border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 hover:text-orange-700 lg:p-0`;
