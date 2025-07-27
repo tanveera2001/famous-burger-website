@@ -1,15 +1,23 @@
 {
-  "name": "backend",
+  "name": "famous-burger-backend",
   "version": "1.0.0",
-  "description": "",
+  "description": "Backend for Famous Burger - a premium burger ordering web application",
   "main": "src/server.js",
   "scripts": {
     "dev": "nodemon src/server.js",
-    "start": "node src/server.js"
+    "start": "node src/server.js",
+    "lint": "echo \"Add ESLint or Prettier config for linting\""
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "keywords": [
+    "famous-burger",
+    "express",
+    "mongodb",
+    "backend",
+    "api",
+    "nodejs"
+  ],
+  "author": "Famous Burger Team",
+  "license": "MIT",
   "dependencies": {
     "bcryptjs": "^3.0.2",
     "cookie-parser": "^1.4.7",

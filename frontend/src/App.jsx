@@ -41,7 +41,7 @@ const RedirectAuthenticatedUser = ({ children }) => {
 	const { isAuthenticated, user } = useAuthStore();
 
 	if (isAuthenticated && user.isVerified) {
-		return <Navigate to='/login' replace />;
+		return <Navigate to='/' replace />;
 	}
 
 	return children;

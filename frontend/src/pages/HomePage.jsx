@@ -1,31 +1,41 @@
 import { Link } from "react-router-dom";
+
 const promoTexts = [
     "We serve the best burgers",
     "in the town. Try our famous",
-    "burgers right now."
+    "burgers right now.",
 ];
+
 const HomePage = () => {
     return (
-        <div className="mx-auto w-full max-w-7xl">
-            <aside className="relative overflow-hidden text-black rounded-lg sm:mx-16 mx-2 sm:py-16">
-                {/* Content Section */}
-                <div className="relative z-10 max-w-screen-xl px-4  pb-20 pt-10 sm:py-24 mx-auto sm:px-6 lg:px-8">
-                    <div className="max-w-xl sm:mt-1 mt-80 space-y-8 text-center sm:text-center sm:ml-auto">
-                        <h2 className="text-4xl sm:text-5xl"> 
-                            <span className="font-bold">Hello</span>
-                            <span className="hidden sm:block font-bold sm:text-5xl">Burger Lovers</span><br />
-                            {promoTexts.map((line, index) => (<span key={index} className="hidden font-medium sm:block sm:text-2xl">{line}</span>))}
-                        </h2>
-                        <Link to="/items" className="inline-flex text-white items-center px-6 py-3 font-bold bg-orange-700 rounded-lg hover:opacity-75">View Menu</Link>
-                    </div>
+        <div className="max-w-3xl w-full mx-auto mt-20 bg-white border border-[#fcbf49] rounded-lg shadow-lg">
+            {/* Text Section */}
+            <div className="p-8 text-center">
+                <h2 className="text-3xl font-bold mb-4 text-[#d62828]">Welcome!</h2>
+                <h3 className="text-xl font-semibold text-gray-800 mb-6">Burger Lovers</h3>
+                <div className="space-y-1 mb-6">
+                    {promoTexts.map((line, index) => (
+                        <p key={index} className="text-sm text-gray-700 font-medium">{line}</p>
+                    ))}
                 </div>
 
-                {/* Image Section */}
-                <div className="absolute inset-0 w-full sm:my-20 sm:pt-1 pt-12 h-full">
-                    <img className="w-120" src="/images/home/home-hero-burger.webp" alt="Hero burger" loading="lazy"/>
-                </div>
-            </aside>
+                <Link
+                    to="/items"
+                    className="inline-block py-2 px-3 w-35 bg-[#d62828] text-white text-xl font-semibold rounded hover:bg-red-700 transition"
+                >
+                    View Menu
+                </Link>
+            </div>
 
+            {/* Image Section */}
+            <div className="border-t px-8 py-4 flex justify-center">
+                <img
+                    src="/images/home/about-burger.jpg"
+                    alt="Hero burger"
+                    className="w-100 h-auto"
+                    loading="lazy"
+                />
+            </div>
         </div>
     );
 };
