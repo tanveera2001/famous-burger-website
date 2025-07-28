@@ -1,55 +1,59 @@
+
 const express = require("express");
 const morgan = require("morgan");
-const customCors = require("./config/cors");
-const { nodeEnv } = require("./secret");
 const path = require("path");
 const cookieParser = require("cookie-parser");
-const bodyParser = require("body-parser");
+
+const customCors = require("./config/cors");
+const { nodeEnv } = require("./secret");
 
 const notFoundHandler = require("./middlewares/notFoundHandler");
 const globalErrorHandler = require("./middlewares/globalErrorHandler");
 const multerErrorHandler = require("./middlewares/multerErrorHandler");
 
-// ✅ Converted import to require:
-const authRoutes = require("./routes/authRouter");
-const itemRouter = require("./routes/itemRouter");
 const authRouter = require("./routes/authRouter");
+const itemRouter = require("./routes/itemRouter");
+
+
+
+
+
+
 
 const app = express();
 
 
-// Middlewares
+// Global Middlewares
 app.use(customCors);
 app.use(morgan("dev"));
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(express.json()); // allows us to parse incoming requests:req.body
-app.use(cookieParser()); // allows us to parse incoming cookies
+app.use(express.json()); 
+app.use(express.urlencoded({ extended: true })); 
+app.use(cookieParser());
 
-// Serve static files
-app.use(express.static(path.join(__dirname, '..', 'public')));
 
-// Routes
+// 📁 Public Static Files
+app.use(express.static(path.join(__dirname, "..", "public")));
+
+
+// API Routes
 app.use("/api/auth", authRouter);
 app.use("/api/items", itemRouter);
 
 
-// Serve frontend in production
+// Frontend in Production
 if (nodeEnv === "production") {
-	app.use(express.static(path.join(__dirname, "/frontend/dist")));
+	app.use(express.static(path.join(__dirname, "frontend", "dist")));
 
 	app.get("*", (req, res) => {
 		res.sendFile(path.resolve(__dirname, "frontend", "dist", "index.html"));
 	});
 }
 
-// 404 handler
-app.use(notFoundHandler);
+// Error Handlers
+app.use(notFoundHandler);        // 404 Not Found
+app.use(multerErrorHandler);    // File Upload Errors
+app.use(globalErrorHandler);    // Fallback Error Handler
 
-// Multer or custom middleware error handler (file size, file type)
-app.use(multerErrorHandler);
 
-// Global fallback error handler
-app.use(globalErrorHandler);
-
+// Export App
 module.exports = app;

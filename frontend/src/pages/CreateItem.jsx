@@ -30,8 +30,8 @@ const CreateItem = () => {
 		formData.append("image", image);
 
 		try {
-			await axios.post(`${API_BASE_URL}/api/items`, formData);
-			navigate("/admin-panel/items");
+			await axios.post(`${API_BASE_URL}/api/items/create-item`, formData);
+			navigate("/admin-panel/list-item");
 		} catch (err) {
 			setError("Failed to create item.");
 			console.error(err);
