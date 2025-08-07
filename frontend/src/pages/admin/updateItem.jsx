@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { useParams, useNavigate } from "react-router-dom";
-import { API_BASE_URL } from "../config/config";
+import { API_BASE_URL } from "../../config/config";
 
 const UpdateItem = () => {
   const { id } = useParams();

@@ -1,9 +1,9 @@
 import { useEffect, useState, useRef } from "react";
 import axios from "axios";
-import { API_BASE_URL } from "../config/config";
+import { API_BASE_URL } from "../../config/config";
 import { FaEdit } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
-import LoadingSpinner from "../components/LoadingSpinner";
+import LoadingSpinner from "../../components/ItemCard";
 import { useNavigate } from "react-router-dom";
 
 const ListItem = () => {

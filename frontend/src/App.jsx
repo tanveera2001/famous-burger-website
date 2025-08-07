@@ -1,11 +1,11 @@
 import { Navigate, Route, Routes } from "react-router-dom";
 
-import SignUpPage from "./pages/SignUpPage";
-import LoginPage from "./pages/LoginPage";
-import EmailVerificationPage from "./pages/EmailVerificationPage";
-import DashboardPage from "./pages/DashboardPage";
-import ForgotPasswordPage from "./pages/ForgotPasswordPage";
-import ResetPasswordPage from "./pages/ResetPasswordPage";
+import SignUpPage from "./pages/auth/SignUpPage";
+import LoginPage from "./pages/auth/LoginPage";
+import EmailVerificationPage from "./pages/auth/EmailVerificationPage";
+import DashboardPage from "./pages/admin/DashboardPage";
+import ForgotPasswordPage from "./pages/auth/ForgotPasswordPage";
+import ResetPasswordPage from "./pages/auth/ResetPasswordPage";
 
 import LoadingSpinner from "./components/LoadingSpinner";
 
@@ -14,12 +14,16 @@ import { useAuthStore } from "./store/authStore";
 import { useEffect } from "react";
 import AdminLayout from "./layouts/AdminLayout";
 import AuthLayout from "./layouts/AuthLayout";
-import CreateItem from "./pages/CreateItem";
-import ListItem from "./pages/ListItem";
-import UpdateItem from "./pages/updateItem";
+import CreateItem from "./pages/admin/CreateItem";
+import ListItem from "./pages/admin/ListItem";
+import UpdateItem from "./pages/admin/updateItem";
 import PublicLayout from "./layouts/PublicLayout";
-import HomePage from "./pages/HomePage";
-import MenuPage from "./pages/MenuPage";
+import HomePage from "./pages/public/HomePage";
+import MenuPage from "./pages/public/MenuPage";
+import PrivacyPolicy from "./pages/public/PrivacyPolicy";
+import TermsAndConditions from "./pages/public/TermsAndConditions";
+import AboutPage from "./pages/public/AboutPage";
+import NotFoundPage from "./pages/NotFoundPage";
 
 // protect routes that require authentication
 const ProtectedRoute = ({ children }) => {
@@ -41,7 +45,7 @@ const RedirectAuthenticatedUser = ({ children }) => {
 	const { isAuthenticated, user } = useAuthStore();
 
 	if (isAuthenticated && user.isVerified) {
-		return <Navigate to='/' replace />;
+		return <Navigate to='/admin-panel' replace />;
 	}
 
 	return children;
@@ -66,7 +70,7 @@ function App() {
 					<Route path='/login' element={<RedirectAuthenticatedUser><LoginPage /></RedirectAuthenticatedUser>} />
 					<Route path='/forgot-password' element={<RedirectAuthenticatedUser><ForgotPasswordPage /></RedirectAuthenticatedUser>} />
 					<Route path='/reset-password/:token' element={<RedirectAuthenticatedUser><ResetPasswordPage /></RedirectAuthenticatedUser>} />
-					<Route path='/verify-email' element={<EmailVerificationPage />} />
+					<Route path='/verify-email' element={<RedirectAuthenticatedUser><EmailVerificationPage /></RedirectAuthenticatedUser>} />
 				</Route>
 
 					{/* Admin Layout (Protected) */}
@@ -79,14 +83,19 @@ function App() {
 
 					{/* Public Layout */}
 				<Route element={<PublicLayout />}>
-					<Route path='/public-panel' element={<HomePage />} />
-					<Route path="/public-panel/menu" element={<MenuPage/>} />
+					<Route path='/' element={<HomePage />} />
+					<Route path="/about" element={<AboutPage/>} />
+					<Route path="/menu" element={<MenuPage/>} />
+					<Route path="/privacy-policy" element={<PrivacyPolicy/>} />
+					<Route path="/terms-and-conditions" element={<TermsAndConditions/>} />
+
+
 					{/* <Route path="/admin-panel/list-item" element={<ListItem />} /> */}
 					
 				</Route>
 				
 				{/* catch all routes */}
-				<Route path='*' element={<Navigate to='/admin-panel' replace />} />
+				<Route path="*" element={<NotFoundPage />} />
 			</Routes>
 			<Toaster />
 		</div>

@@ -1,13 +1,19 @@
 import { Outlet } from "react-router-dom";
 import PublicNavbar from "../components/PublicNavbar";
-// import Footer from "../components/Footer";
+import PublicFooter from "../components/PublicFooter";
 
-export default function PublicLayout() {
+const PublicLayout = () => {
 	return (
 		<div className="min-h-screen flex flex-col">
 			<PublicNavbar />
-			<Outlet />
-			{/* <Footer /> */}
+			
+			<div className="flex-grow mb-10"> {/* Add spacing below Outlet */}
+				<Outlet />
+			</div>
+
+			<PublicFooter />
 		</div>
 	);
-}
+};
+
+export default PublicLayout;
