@@ -88,9 +88,6 @@ function App() {
 					<Route path="/menu" element={<MenuPage/>} />
 					<Route path="/privacy-policy" element={<PrivacyPolicy/>} />
 					<Route path="/terms-and-conditions" element={<TermsAndConditions/>} />
-
-
-					{/* <Route path="/admin-panel/list-item" element={<ListItem />} /> */}
 					
 				</Route>
 				
