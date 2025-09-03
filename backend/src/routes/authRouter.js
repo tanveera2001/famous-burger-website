@@ -7,7 +7,7 @@ const {
 	forgotPassword,
 	resetPassword,
 	checkAuth,
-} = require("../controllers/auth.controller");
+} = require("../controllers/authController");
 const { verifyToken } = require("../middlewares/verifyToken");
 
 
@@ -20,10 +20,7 @@ authRouter.post("/signup", signup);
 authRouter.post("/verify-email", verifyEmail);
 authRouter.post("/login", login);
 authRouter.post("/logout", logout);
-
-
 authRouter.post("/forgot-password", forgotPassword);
-
 authRouter.post("/reset-password/:token", resetPassword);
 
 module.exports = authRouter;
