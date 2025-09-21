@@ -13,6 +13,7 @@ const multerErrorHandler = require("./middlewares/multerErrorHandler");
 
 const authRouter = require("./routes/authRouter");
 const itemRouter = require("./routes/itemRouter");
+const seedRouter = require("./routes/seedRouter");
 
 
 
@@ -38,6 +39,7 @@ app.use(express.static(path.join(__dirname, "..", "public")));
 // API Routes
 app.use("/api/auth", authRouter);
 app.use("/api/items", itemRouter);
+app.use("/api/seed", seedRouter);
 
 
 // Frontend in Production

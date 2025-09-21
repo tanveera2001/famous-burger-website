@@ -1,85 +1,80 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
+import Card from "../../components/Card";
+import Button from "../../components/Button";
 import { API_BASE_URL } from "../../config/config";
-import ItemCard from "../../components/ItemCard";
-import LoadingSpinner from "../../components/LoadingSpinner";
 
 const MenuPage = () => {
-  const [items, setItems] = useState([]);
+  const [burgers, setBurgers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const abortControllerRef = useRef(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const ITEMS_PER_PAGE = 9; // You can adjust this
 
-  const fetchItems = async (signal) => {
+  // Fetch burgers for the current page
+  const fetchBurgers = async (page = 1) => {
     try {
+      setLoading(true);
       const response = await axios.get(`${API_BASE_URL}/api/items`, {
-        signal,
+        params: { page, limit: ITEMS_PER_PAGE },
       });
-      setItems(response.data?.payload?.items || []);
+
+      // Assuming backend returns pagination info
+      setBurgers(response.data.payload.items);
+      setTotalPages(response.data.payload.pagination.totalPages || 1);
     } catch (err) {
-      if (axios.isCancel(err)) {
-        console.log("Fetch canceled");
-      } else {
-        console.error("Error fetching items:", err);
-        setError("Failed to load items.");
-      }
+      console.error(err);
+      setError("Failed to load burgers.");
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    abortControllerRef.current = new AbortController();
-    fetchItems(abortControllerRef.current.signal);
-    return () => abortControllerRef.current?.abort();
-  }, []);
+    fetchBurgers(currentPage);
+  }, [currentPage]);
 
-  const handleRetry = () => {
-    if (abortControllerRef.current) {
-      abortControllerRef.current.abort();
-    }
-    const newController = new AbortController();
-    abortControllerRef.current = newController;
-
-    setError(null);
-    setLoading(true);
-    fetchItems(newController.signal);
-  };
+  const handlePrev = () => setCurrentPage((prev) => Math.max(prev - 1, 1));
+  const handleNext = () => setCurrentPage((prev) => Math.min(prev + 1, totalPages));
 
   return (
-    <main className="p-4">
-      <section className="text-center mb-8">
-        <h1 className="text-3xl font-extrabold text-[#d62828]">Available Burgers</h1>
-        <p className="mt-2 text-[#3a5a40] text-sm sm:text-base">
-          Explore our mouth-watering selection of juicy burgers, grilled to perfection and crafted with fresh ingredients.
-        </p>
-      </section>
+    <div className="max-w-[1024px] mx-auto px-4 sm:px-6 md:px-8 mt-16 mb-16">
+      <h2 className="text-4xl font-extrabold text-zinc-800 text-center mb-10">
+        Full <span className="text-orange-500">Menu</span>
+      </h2>
 
-      <div className="min-h-screen flex items-center justify-center bg-white p-4">
+      <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
         {loading ? (
-          <LoadingSpinner />
+          <p className="col-span-full text-center text-zinc-500">Loading...</p>
         ) : error ? (
-          <div className="text-red-600 text-center text-lg font-semibold">
-            {error}
-            <button
-              onClick={handleRetry}
-              className="ml-4 text-[#3a5a40] underline hover:text-green-800 transition-colors duration-200"
-            >
-              Retry
-            </button>
-          </div>
-        ) : items.length === 0 ? (
-          <div className="text-center text-gray-500">No items found.</div>
+          <p className="col-span-full text-center text-red-500">{error}</p>
+        ) : burgers.length === 0 ? (
+          <p className="col-span-full text-center text-zinc-500">
+            No burgers available right now.
+          </p>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
-            {items.map((item) => (
-              <ItemCard key={item._id} item={item} />
-            ))}
-          </div>
+          burgers.map((burger) => (
+            <Card
+              key={burger._id}
+              title={burger.title}
+              price={burger.price}
+              image={burger.image}
+            />
+          ))
         )}
       </div>
-    </main>
+
+      {/* Pagination */}
+      <div className="flex justify-center mt-10 gap-4">
+        <Button content="Prev" onClick={handlePrev} disabled={currentPage === 1} />
+        <span className="flex items-center text-lg">
+          Page {currentPage} of {totalPages}
+        </span>
+        <Button content="Next" onClick={handleNext} disabled={currentPage === totalPages} />
+      </div>
+    </div>
   );
 };
 

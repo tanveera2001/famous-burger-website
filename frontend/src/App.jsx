@@ -1,4 +1,4 @@
-import { Navigate, Route, Routes } from "react-router-dom";
+import {Route, Routes } from "react-router-dom";
 
 import SignUpPage from "./pages/auth/SignUpPage";
 import LoginPage from "./pages/auth/LoginPage";
@@ -25,7 +25,7 @@ import TermsAndConditions from "./pages/public/TermsAndConditions";
 import AboutPage from "./pages/public/AboutPage";
 import NotFoundPage from "./pages/NotFoundPage";
 
-// protect routes that require authentication
+
 const ProtectedRoute = ({ children }) => {
 	const { isAuthenticated, user } = useAuthStore();
 
@@ -40,7 +40,7 @@ const ProtectedRoute = ({ children }) => {
 	return children;
 };
 
-// redirect authenticated users to the home page
+
 const RedirectAuthenticatedUser = ({ children }) => {
 	const { isAuthenticated, user } = useAuthStore();
 
@@ -51,7 +51,7 @@ const RedirectAuthenticatedUser = ({ children }) => {
 	return children;
 };
 
-function App() {
+const App = () => {
 	const { isCheckingAuth, checkAuth } = useAuthStore();
 
 	useEffect(() => {
@@ -64,8 +64,8 @@ function App() {
 		<div>
 
 			<Routes>
-				{/* Auth Layout */}
-				<Route element={<AuthLayout />}>
+				
+				 <Route element={<AuthLayout />}>
 					<Route path='/signup' element={<RedirectAuthenticatedUser><SignUpPage /></RedirectAuthenticatedUser>} />
 					<Route path='/login' element={<RedirectAuthenticatedUser><LoginPage /></RedirectAuthenticatedUser>} />
 					<Route path='/forgot-password' element={<RedirectAuthenticatedUser><ForgotPasswordPage /></RedirectAuthenticatedUser>} />

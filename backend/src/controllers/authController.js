@@ -22,9 +22,7 @@ const signup = async (req, res) => {
 		const userAlreadyExists = await User.findOne({ email });
 		console.log("userAlreadyExists", userAlreadyExists);
 
-		if (userAlreadyExists) {
-			return res.status(400).json({ success: false, message: "User already exists" });
-		}
+		if(userAlreadyExists) throw new Error("User already exists!"); 
 
 		const hashedPassword = await bcryptjs.hash(password, 10);
 		const verificationToken = Math.floor(100000 + Math.random() * 900000).toString();
@@ -120,7 +118,7 @@ const login = async (req, res) => {
 	}
 };
 
-const logout = async (req, res) => {
+const logout = (req, res) => {
 	res.clearCookie("token");
 	res.status(200).json({ success: true, message: "Logged out successfully" });
 };

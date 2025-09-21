@@ -47,14 +47,29 @@ const handleCreateItem = async (req, res, next) => {
 // Controller to handle the request for fetching all items from the database.
 const handleGetAllItems = async (req, res, next) => {
   try {
-    // Fetch all items from the database without any filter
-    const items = await Item.find({}, "title price image");
+    // Get page and limit from query, default to 1 and 9
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 9;
 
-    // Send a success response with status 200 and the retrieved items
+    // Calculate skip
+    const skip = (page - 1) * limit;
+
+    // Fetch items with pagination
+    const items = await Item.find({}, "title price image")
+      .skip(skip)
+      .limit(limit);
+
+    // Count total items for pagination info
+    const totalItems = await Item.countDocuments();
+    const totalPages = Math.ceil(totalItems / limit);
+
     return successResponse(res, {
       statusCode: 200,
-      message: "All items have been retrieved successfully.",
-      payload: { items },
+      message: "Items retrieved successfully.",
+      payload: {
+        items,
+        pagination: { totalItems, totalPages, currentPage: page },
+      },
     });
   } catch (error) {
     next(error);
